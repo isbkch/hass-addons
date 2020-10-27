@@ -1,10 +1,16 @@
 # Home Assistant Add-on: FTP To S3
 
-Automatically move files to S3 from your FTP destination folder
+Automatically move files to S3 from your local /backup folder
 
 ## About
 
-Built this addon because I needed a way to store my surveillance camera recordings. Many cameras allows uploading of files via FTP, so only the last step was left, which is moving them to S3.
-This addon will automatically recursively upload anything you put inside the folder "/backup" to the Amazon S3 bucket of your choice and will optionally upload existing recordings if they are not found in S3.
+I Built this add-on because I needed a way to store my surveillance camera recordings on Amazon S3.
+Many cameras allow uploading of files via FTP, so only the last step of moving them to S3 was left.
 
-My setup currently is using the official FTP addon to upload from the cameras then this addons take care of the rest.
+This add-on will automatically and recursively upload anything you put inside the folder "/backup" to the Amazon S3 bucket of your choice and will optionally upload existing files if they are not found in S3.
+
+My setup currently is using the official FTP add-on to enable an FTP server on the Pi running Hass, thus accepting my FTP cameras uploads and then this add-ons take care of the rest.
+
+Although I have a decade of experience in software engineering, I'm not a Python developer, so this awesome add-on was a big inspiration https://github.com/gdrapp/hass-addons
+
+Every contribution is welcome.
