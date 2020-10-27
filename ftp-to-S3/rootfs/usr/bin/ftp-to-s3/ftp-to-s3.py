@@ -14,7 +14,6 @@ from s3bucket import S3Bucket, S3BucketError
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 
-
 class BackupEventHandler(RegexMatchingEventHandler):
     BACKUP_REGEX = [r".+\.tar$"]
 
@@ -59,7 +58,7 @@ class FileWatcher:
         """Watch for new files in the backup directory
 
         Args:
-            monitor_path (str): Path to monitor for new fiels
+            monitor_path (str): Path to monitor for new files
             s3_bucket (S3Bucket): S3 bucket to upload files to
         """
         self.config = config
@@ -85,7 +84,7 @@ class FileWatcher:
 
     def schedule(self):
         logger.info(
-            f"Monitoring path {self.config.monitor_path} for new recordings")
+            f"Monitoring path {self.config.monitor_path} for new uploads")
         self.event_observer.schedule(
             self.event_handler,
             str(self.config.monitor_path),
@@ -117,7 +116,7 @@ def set_log_level(hass_log_level: str):
 
 def upload_file(file: Path, s3_bucket: S3Bucket):
     s3_bucket.upload_file(str(file))
-    s3_bucket.sync_files()
+    # s3_bucket.sync_files()
 
 
 if __name__ == "__main__":
