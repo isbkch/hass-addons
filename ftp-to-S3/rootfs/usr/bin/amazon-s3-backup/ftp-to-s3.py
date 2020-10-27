@@ -56,20 +56,20 @@ class BackupEventHandler(RegexMatchingEventHandler):
             logger.exception(f"Error uploading file: {err}")
         else:
             if config.keep_local_recordings is not None:
-                logger.info("Cleaning up local snapshots")
+                logger.info("Cleaning up local recordings")
                 try:
                     recordings = self.supervisor_api.get_recordings()
                 except SupervisorAPIError as err:
                     logger.exception(
                         "Error getting list of recordings from the Home Assistant Supervisor API")
                 else:
-                    snapshots.sort(key=lambda s: datetime.datetime.strptime(
+                    recordings.sort(key=lambda s: datetime.datetime.strptime(
                         s["date"], "%Y-%m-%dT%H:%M:%S.%f%z"))
-                    snapshots_to_delete = snapshots[:-
+                    recordings_to_delete = recordings[:-
                                                     config.keep_local_recordings]
                     logger.info(
-                        f"Deleting the following snapshots: {[s['name'] for s in snapshots_to_delete]}")
-                    for snapshot in snapshots_to_delete:
+                        f"Deleting the following recordings: {[s['name'] for s in recordings_to_delete]}")
+                    for snapshot in recordings_to_delete:
                         logger.debug(
                             f"Removing snapshot {snapshot.get('name')}")
                         if not supervisor_api.remove_recording(snapshot.get("slug")):
@@ -108,7 +108,7 @@ class FileWatcher:
 
     def schedule(self):
         logger.info(
-            f"Monitoring path {self.config.monitor_path} for new snapshots")
+            f"Monitoring path {self.config.monitor_path} for new recordings")
         self.event_observer.schedule(
             self.event_handler,
             str(self.config.monitor_path),

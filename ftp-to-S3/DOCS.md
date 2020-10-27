@@ -27,6 +27,7 @@ bucket_region: us-east-1
 storage_class: STANDARD
 upload_missing_files: false
 keep_local_recordings: 2
+folder_to_read_from: '/root/recordings'
 ```
 
 ### Option: `log_level`
@@ -52,6 +53,9 @@ Upload files to S3 that exist in the Home Assistant backup directory but not in 
 
 ### Option: `keep_local_recordings`
 Number of local recordings to keep. recordings are pruned after a successful snapshot upload to S3.
+
+### Option: `folder_to_read_from` (required)
+The folder you want to transfer content from
 
 ## Support
 

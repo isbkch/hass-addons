@@ -9,7 +9,7 @@ class ConfigError(Exception):
 class Config:
     DEFAULT_STORAGE_CLASS = "STANDARD"
     DEFAULT_UPLOAD_MISSING_FILES = "false"
-    DEFAULT_MONITOR_PATH = "/backup"
+    DEFAULT_MONITOR_PATH = "/root/backup"
 
     VALID_STORAGE_CLASSES = [
         "STANDARD",
