@@ -15,10 +15,10 @@ logging.basicConfig()
 logger = logging.getLogger(__name__)
 
 class BackupEventHandler(RegexMatchingEventHandler):
-    BACKUP_REGEX = [r".+\.tar$"]
+    BACKUP_REGEX = [r".+\.*$"]
 
     def __init__(self, config: Config, s3_bucket: S3Bucket):
-        """Handle new files in the HASS backup directory
+        """Handle new files in the Hass backup directory
 
         Args:
             s3_bucket (S3Bucket): S3 bucket to upload files to
