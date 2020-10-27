@@ -27,9 +27,7 @@
         "bucket_name": "my_bucket",
         "bucket_region": "us-east-1",
         "storage_class": "STANDARD",
-        "upload_missing_files": false,
-        "keep_local_recordings": 3,
-        "folder_to_read_from": "'/root/recordings'"
+        "upload_missing_files": false
     },
     "schema": {
         "log_level": "list(trace|debug|info|notice|warning|error|fatal)",
@@ -38,9 +36,7 @@
         "bucket_name": "str",
         "bucket_region": "list(us-east-1|us-east-2|us-west-1|us-west-2|ca-central-1|eu-west-1|eu-central-1|eu-west-2|eu-west-3|ap-southeast-1|ap-southeast-2|ap-northeast-2|ap-northeast-1|ap-south-1|sa-east-1)",
         "storage_class": "list(STANDARD|REDUCED_REDUNDANCY|STANDARD_IA|ONEZONE_IA|INTELLIGENT_TIERING|GLACIER|DEEP_ARCHIVE)",
-        "upload_missing_files": "bool?",
-        "keep_local_recordings": "int(0,)?",
-        "folder_to_read_from": "str"
+        "upload_missing_files": "bool?"
     },
     "advanced": true,
     "stage": "experimental"

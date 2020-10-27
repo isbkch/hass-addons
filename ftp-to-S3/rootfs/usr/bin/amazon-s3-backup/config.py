@@ -29,11 +29,6 @@ class Config:
         self.upload_missing_files = True if os.getenv(
             "upload_missing_files", Config.DEFAULT_UPLOAD_MISSING_FILES).lower() == "true" else False
 
-        try:
-            self.keep_local_recordings = int(os.getenv("keep_local_recordings"))
-        except (TypeError, ValueError) as err:
-            self.keep_local_recordings = None
-
         self.monitor_path = Path(
             os.getenv("monitor_path", Config.DEFAULT_MONITOR_PATH))
 
@@ -49,11 +44,6 @@ class Config:
         if not self.storage_class in Config.VALID_STORAGE_CLASSES:
             raise ConfigError(
                 f"Invalid S3 storage class specified: {self.storage_class}")
-
-        if self.keep_local_recordings is not None:
-            if self.keep_local_recordings < 0:
-                raise ConfigError(
-                    "keep_local_recordings must be greater than zero")
 
         if not self.monitor_path.exists():
             raise ConfigError(
