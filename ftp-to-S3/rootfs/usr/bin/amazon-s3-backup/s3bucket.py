@@ -1,6 +1,8 @@
 import logging
 from typing import List
 import boto3
+import sys
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +49,7 @@ class S3Bucket:
 
             return [{"name": obj.get("Key"), "size": obj.get("Size"), "last_modified": obj.get("LastModified")} for obj in (response.get("Contents") or [])]
 
-    def upload_file(self, file: str, metadata: dict):
+    def upload_file(self, file: str):
         """Upload file to S3 bucket
 
         Args:
@@ -56,8 +58,6 @@ class S3Bucket:
         key = file.lstrip("/")
         extra_args = {}
         extra_args["StorageClass"] = self.storage_class
-        if metadata is not None:
-            extra_args["Metadata"] = metadata
 
         try:
             logger.info(f"Uploading file [{file}] to S3")
@@ -69,3 +69,16 @@ class S3Bucket:
                 f"Uploaded file [{key}] to S3 bucket [{self.bucket_name}] using storage class [{self.storage_class}]")
         except boto3.exceptions.S3UploadFailedError as err:
             raise S3BucketError(f"S3 upload error: {err}")
+
+    def sync_files(self):
+        """Sync local to S3
+
+        """
+
+        try:
+            logger.info(f"syncing local to S3")
+            sync_command = f"aws s3 sync /backup s3://{self.bucket_name}/"
+            os.system(sync_command)
+        except Exception:
+            logger.critical("Error syncing local folder to remove bucket")
+            sys.exit(1)

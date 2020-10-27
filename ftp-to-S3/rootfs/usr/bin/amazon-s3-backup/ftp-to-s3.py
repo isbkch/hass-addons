@@ -116,8 +116,8 @@ def set_log_level(hass_log_level: str):
 
 
 def upload_file(file: Path, s3_bucket: S3Bucket):
-    metadata = None
-    s3_bucket.upload_file(str(file), metadata)
+    s3_bucket.upload_file(str(file))
+    s3_bucket.sync_files()
 
 
 if __name__ == "__main__":
