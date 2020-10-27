@@ -45,6 +45,7 @@ AWS region where the S3 bucket was created.
 
 ### Option: `storage_class` (required)
 Amazon S3 storage class to use when uploading files to S3.
+Can be one of the following: STANDARD, REDUCED_REDUNDANCY, STANDARD_IA, ONEZONE_IA, INTELLIGENT_TIERING, GLACIER, DEEP_ARCHIVE
 
 ### Option: `upload_missing_files`
 Upload files to S3 that exist in the Home Assistant backup directory but not in S3. The addon checks for a matching file name and file size. If the file size differs, the addon will assume the file on S3 is corrupt and upload the file again.
