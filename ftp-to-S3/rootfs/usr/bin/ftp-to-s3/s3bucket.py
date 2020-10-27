@@ -2,14 +2,12 @@ import logging
 from typing import List
 import boto3
 import sys
-import os
 
 logger = logging.getLogger(__name__)
 
 
 class S3BucketError(Exception):
     pass
-
 
 class S3Bucket:
     def __init__(self, bucket_name: str, bucket_region: str, storage_class: str):
@@ -69,16 +67,3 @@ class S3Bucket:
                 f"Uploaded file [{key}] to S3 bucket [{self.bucket_name}] using storage class [{self.storage_class}]")
         except boto3.exceptions.S3UploadFailedError as err:
             raise S3BucketError(f"S3 upload error: {err}")
-
-    def sync_files(self):
-        """Sync local to S3
-
-        """
-
-        try:
-            logger.info(f"syncing local to S3")
-            sync_command = f"aws s3 sync /backup s3://{self.bucket_name}/"
-            os.system(sync_command)
-        except Exception:
-            logger.critical("Error syncing local folder to remove bucket")
-            sys.exit(1)
