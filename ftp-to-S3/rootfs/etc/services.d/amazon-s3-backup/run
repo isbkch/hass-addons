@@ -1,0 +1,19 @@
+#!/usr/bin/with-contenv bashio
+# ==============================================================================
+# Home Assistant Community Add-on: Amazon S3 Backup
+# Runs amazon-s3-backup.py script
+# ==============================================================================
+
+bashio::log.info "Starting Amazon S3 Backup..."
+
+export AWS_ACCESS_KEY_ID="$(bashio::config 'aws_access_key')"
+export AWS_SECRET_ACCESS_KEY="$(bashio::config 'aws_secret_access_key')"
+
+export bucket_name="$(bashio::config 'bucket_name')"
+export bucket_region="$(bashio::config 'bucket_region')"
+export storage_class="$(bashio::config 'storage_class')"
+export upload_missing_files="$(bashio::config 'upload_missing_files')"
+export keep_local_recordings="$(bashio::config 'keep_local_recordings')"
+export monitor_path="/backup"
+
+exec python3 -u /usr/bin/amazon-s3-backup/amazon-s3-backup.py >&2
