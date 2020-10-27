@@ -7,6 +7,6 @@ systems that have installed Home Assistant.
 
 ## Add-ons provided by this repository
 
-- **[FTP To S3](/ftp-to-S3)**
-    
-    Backup to S3 files uploaded via FTP
+- **[FTP To S3](/ftp-to-s3)**
+
+    Automatically move files to S3 from your FTP destination folder

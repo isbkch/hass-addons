@@ -1,6 +1,6 @@
 # Home Assistant Add-on: FTP To S3
 
-Backup to S3 files uploaded via FTP
+Automatically move files to S3 from your FTP destination folder
 
 ## About
 
