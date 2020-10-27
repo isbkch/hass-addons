@@ -10,7 +10,6 @@ from watchdog.events import RegexMatchingEventHandler
 
 from config import Config, ConfigError
 from s3bucket import S3Bucket, S3BucketError
-from supervisorapi import SupervisorAPI, SupervisorAPIError
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
@@ -19,7 +18,7 @@ logger = logging.getLogger(__name__)
 class BackupEventHandler(RegexMatchingEventHandler):
     BACKUP_REGEX = [r".+\.tar$"]
 
-    def __init__(self, config: Config, s3_bucket: S3Bucket, supervisor_api: SupervisorAPI):
+    def __init__(self, config: Config, s3_bucket: S3Bucket):
         """Handle new files in the HASS backup directory
 
         Args:
@@ -28,7 +27,6 @@ class BackupEventHandler(RegexMatchingEventHandler):
         super().__init__(self.BACKUP_REGEX)
         self.config = config
         self.s3_bucket = s3_bucket
-        self.supervisor_api = supervisor_api
 
     def on_created(self, event):
         self.process(event)
@@ -51,34 +49,13 @@ class BackupEventHandler(RegexMatchingEventHandler):
 
         try:
             upload_file(Path(event.src_path),
-                        self.s3_bucket, self.supervisor_api)
+                        self.s3_bucket)
         except S3BucketError as err:
             logger.exception(f"Error uploading file: {err}")
-        else:
-            if config.keep_local_recordings is not None:
-                logger.info("Cleaning up local recordings")
-                try:
-                    recordings = self.supervisor_api.get_recordings()
-                except SupervisorAPIError as err:
-                    logger.exception(
-                        "Error getting list of recordings from the Home Assistant Supervisor API")
-                else:
-                    recordings.sort(key=lambda s: datetime.datetime.strptime(
-                        s["date"], "%Y-%m-%dT%H:%M:%S.%f%z"))
-                    recordings_to_delete = recordings[:-
-                                                    config.keep_local_recordings]
-                    logger.info(
-                        f"Deleting the following recordings: {[s['name'] for s in recordings_to_delete]}")
-                    for snapshot in recordings_to_delete:
-                        logger.debug(
-                            f"Removing snapshot {snapshot.get('name')}")
-                        if not supervisor_api.remove_recording(snapshot.get("slug")):
-                            logger.warn(
-                                f"Error removing snapshot {snapshot.get('name')}")
 
 
 class FileWatcher:
-    def __init__(self, config: Config, s3_bucket: S3Bucket, supervisor_api: SupervisorAPI):
+    def __init__(self, config: Config, s3_bucket: S3Bucket):
         """Watch for new files in the backup directory
 
         Args:
@@ -87,7 +64,7 @@ class FileWatcher:
         """
         self.config = config
         self.event_handler = BackupEventHandler(
-            config, s3_bucket, supervisor_api)
+            config, s3_bucket)
         self.event_observer = Observer()
 
     def run(self):
@@ -138,18 +115,8 @@ def set_log_level(hass_log_level: str):
     logger.setLevel(level_map.get(hass_log_level, logging.NOTSET))
 
 
-def upload_file(file: Path, s3_bucket: S3Bucket, supervisor_api: SupervisorAPI):
-    slug = file.stem
+def upload_file(file: Path, s3_bucket: S3Bucket):
     metadata = None
-    try:
-        snapshot_detail = supervisor_api.get_recording(slug)
-        metadata_keys = ["type", "name", "date", "homeassistant"]
-        metadata = {k: snapshot_detail[k]
-                    for k in snapshot_detail if k in metadata_keys}
-    except SupervisorAPIError as err:
-        logger.warning(
-            f"Error getting snapshot info from Home Assistant Supervisor API : {err}")
-
     s3_bucket.upload_file(str(file), metadata)
 
 
@@ -164,8 +131,6 @@ if __name__ == "__main__":
 
     s3_bucket = S3Bucket(config.bucket_name,
                          config.bucket_region, config.storage_class)
-
-    supervisor_api = SupervisorAPI(os.getenv("SUPERVISOR_TOKEN"))
 
     bucket_contents = []
     try:
@@ -190,7 +155,7 @@ if __name__ == "__main__":
                 logger.warning(
                     f"Local file {file} does not match the file in S3")
                 try:
-                    upload_file(file, s3_bucket, supervisor_api)
+                    upload_file(file, s3_bucket)
                 except S3BucketError as err:
                     logger.exception(f"Error uploading file: {err}")
         else:
@@ -198,8 +163,8 @@ if __name__ == "__main__":
                 f"Local file {file} not found in S3")
             if config.upload_missing_files:
                 try:
-                    upload_file(file, s3_bucket, supervisor_api)
+                    upload_file(file, s3_bucket)
                 except S3BucketError as err:
                     logger.exception(f"Error uploading file: {err}")
 
-    FileWatcher(config, s3_bucket, supervisor_api).run()
+    FileWatcher(config, s3_bucket).run()

@@ -15,6 +15,6 @@ export storage_class="$(bashio::config 'storage_class')"
 export upload_missing_files="$(bashio::config 'upload_missing_files')"
 export keep_local_recordings="$(bashio::config 'keep_local_recordings')"
 export folder_to_read_from="$(bashio::config 'keep_local_recordings')"
-export monitor_path="/root/backup"
+export monitor_path="/backup"
 
 exec python3 -u /usr/bin/ftp-to-s3/ftp-to-s3.py >&2
