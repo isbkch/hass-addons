@@ -53,6 +53,7 @@ class S3Bucket:
         Args:
             file (str): Full path of file to upload
         """
+        clean_file_name = file.lstrip("/")
         extra_args = {}
         extra_args["StorageClass"] = self.storage_class
 
@@ -60,7 +61,7 @@ class S3Bucket:
             logger.info(f"Uploading file [{file}] to S3")
             self.s3_client.upload_file(Filename=file,
                                        Bucket=self.bucket_name,
-                                       Key=file,
+                                       Key=clean_file_name,
                                        ExtraArgs=extra_args)
             logger.info(
                 f"Uploaded file [{file}] to S3 bucket [{self.bucket_name}] using storage class [{self.storage_class}]")

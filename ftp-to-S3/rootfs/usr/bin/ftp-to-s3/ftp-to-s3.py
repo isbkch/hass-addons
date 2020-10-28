@@ -137,7 +137,7 @@ if __name__ == "__main__":
         logger.critical("Error listing contents of S3 bucket!")
         sys.exit(1)
 
-    local_files = [x.name for x in config.monitor_path.iterdir()
+    local_files = [x for x in config.monitor_path.glob('**/*')
                    if x.is_file()]
 
     for local_file in local_files:
@@ -154,6 +154,12 @@ if __name__ == "__main__":
                     f"Local file {file} does not match the file in S3")
                 try:
                     upload_file(file, s3_bucket)
+                    # delete after upload
+                    # if os.path.exists(file):
+                    #     os.remove(file)
+                    # else:
+                    #     logger.debug(
+                    #         f"Did not delete: File {file} does not exist")
                 except S3BucketError as err:
                     logger.exception(f"Error uploading file: {err}")
         else:
