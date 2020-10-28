@@ -11,6 +11,4 @@ This add-on will automatically and recursively upload anything you put inside th
 
 My setup currently is using the official FTP add-on to enable an FTP server on the Pi running Hass, thus accepting my FTP cameras uploads and then this add-ons take care of the rest.
 
-Although I have a decade of experience in software engineering, I'm not a Python developer, so this awesome add-on was a big inspiration https://github.com/gdrapp/hass-addons
-
-Every contribution is welcome.
+Big thanks to this [awesome add-on was](https://github.com/gdrapp/hass-addons) that was a big inspiration for mine
