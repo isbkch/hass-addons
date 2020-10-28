@@ -53,7 +53,6 @@ class S3Bucket:
         Args:
             file (str): Full path of file to upload
         """
-        key = file.lstrip("/")
         extra_args = {}
         extra_args["StorageClass"] = self.storage_class
 
@@ -61,9 +60,9 @@ class S3Bucket:
             logger.info(f"Uploading file [{file}] to S3")
             self.s3_client.upload_file(Filename=file,
                                        Bucket=self.bucket_name,
-                                       Key=key,
+                                       Key=file,
                                        ExtraArgs=extra_args)
             logger.info(
-                f"Uploaded file [{key}] to S3 bucket [{self.bucket_name}] using storage class [{self.storage_class}]")
+                f"Uploaded file [{file}] to S3 bucket [{self.bucket_name}] using storage class [{self.storage_class}]")
         except boto3.exceptions.S3UploadFailedError as err:
             raise S3BucketError(f"S3 upload error: {err}")
