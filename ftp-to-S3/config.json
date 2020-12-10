@@ -1,7 +1,7 @@
 {
     "name": "FTP To S3",
-    "version": "1.0",
-    "slug": "ftp-to-s3",
+    "version": "1.1",
+    "slug": "ftp_to_s3",
     "description": "Automatically move files to S3 from your FTP destination folder",
     "url": "https://github.com/isbkch/hass-addons",
     "startup": "application",
